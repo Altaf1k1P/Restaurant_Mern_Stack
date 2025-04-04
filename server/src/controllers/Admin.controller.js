@@ -63,43 +63,43 @@ const addFood = async (req, res) => {
     }
 }
 
-const addPost = asyncHandler(async (req, res) => {
-    const { title, content, tags, isPublished } = req.body;
+// const addPost = asyncHandler(async (req, res) => {
+//     const { title, content, tags, isPublished } = req.body;
 
-    if (!title || !content) {
-        throw new ApiError(400, "Title and content are required to create a post");
-    }
+//     if (!title || !content) {
+//         throw new ApiError(400, "Title and content are required to create a post");
+//     }
 
-    let featuredImgUrl = null;
-    if (req.files?.featuredImg) {
-        const file = req.files.featuredImg[0];
-        const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+//     let featuredImgUrl = null;
+//     if (req.files?.featuredImg) {
+//         const file = req.files.featuredImg[0];
+//         const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 
-        if (!allowedTypes.includes(file.mimetype)) {
-            throw new ApiError(400, "Unsupported file format. Only JPEG, PNG, and WebP are allowed.");
-        }
+//         if (!allowedTypes.includes(file.mimetype)) {
+//             throw new ApiError(400, "Unsupported file format. Only JPEG, PNG, and WebP are allowed.");
+//         }
 
-        const uploadedImage = await uploadOnCloudinary(file.path);
-        if (!uploadedImage) {
-            throw new ApiError(500, "Image upload failed. Please try again.");
-        }
+//         const uploadedImage = await uploadOnCloudinary(file.path);
+//         if (!uploadedImage) {
+//             throw new ApiError(500, "Image upload failed. Please try again.");
+//         }
 
-        featuredImgUrl = uploadedImage.url;
-    }
+//         featuredImgUrl = uploadedImage.url;
+//     }
 
-    const post = await Post.create({
-        title,
-        content,
-        tags: Array.isArray(tags)
-            ? tags.flatMap((tag) => tag.split(" ").map((t) => t.trim()).filter(Boolean))
-            : [],
-        featuredImg: featuredImgUrl,
-        owner: req.user._id,
-        isPublished: isPublished || false,
-    });
+//     const post = await Post.create({
+//         title,
+//         content,
+//         tags: Array.isArray(tags)
+//             ? tags.flatMap((tag) => tag.split(" ").map((t) => t.trim()).filter(Boolean))
+//             : [],
+//         featuredImg: featuredImgUrl,
+//         owner: req.user._id,
+//         isPublished: isPublished || false,
+//     });
 
-    res.status(201).json(new ApiResponse(201, post, "Post created successfully"));
-});
+//     res.status(201).json(new ApiResponse(201, post, "Post created successfully"));
+// });
 
 const getAllFood = async (req, res) => {
     try {
