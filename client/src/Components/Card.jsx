@@ -1,20 +1,63 @@
-import React from 'react'
+import React, { useState } from "react";
 
-function Card({ imgSrc, title, description, price }) {
-  return (
-    <div>
-      <div className="w-[300px] h-auto p-6 bg-gradient-to-br from-white to-gray-100 rounded-xl shadow-lg shadow-gray-300 transition-transform duration-300 ease-in-out overflow-hidden hover:transform hover:-translate-y-2 hover:scale-105 hover:shadow-[0_15px_25px_rgba(239,122,30,0.2),0_10px_15px_rgba(0,0,0,0.1)]">
-        <img
-          className='w-full h-[200px] object-cover mb-4 rounded-xl'
-          src={imgSrc}
-          alt={title}
-        />
-        <h3 className='text-[rgb(57,33,55)] text-2xl mb-2 font-poppins font-semibold text-center'>{title}</h3>
-        <p className='text-[rgb(109,97,110)] text-base mb-4 text-center leading-6'>{description}</p>
-        <span className='inline-block bg-[rgb(239,122,30)] text-white py-2 px-5 text-lg font-bold rounded-full text-center transition-colors duration-300 ease hover:bg-[rgb(255,142,50)]'>{price}</span>
-      </div>
-    </div>
-  )
-}
+const Card = ({ menuItems }) => {
+    const [cart, setCart] = useState({});
+
+    // Function to increase quantity
+    const increaseQuantity = (dishName) => {
+        setCart((prevCart) => ({
+            ...prevCart,
+            [dishName]: (prevCart[dishName] || 0) + 1
+        }));
+    };
+
+    // Function to decrease quantity
+    const decreaseQuantity = (dishName) => {
+        setCart((prevCart) => {
+            const updatedCart = { ...prevCart };
+            if (updatedCart[dishName] > 1) {
+                updatedCart[dishName] -= 1;
+            } else {
+                delete updatedCart[dishName]; // Remove from cart when quantity is 0
+            }
+            return updatedCart;
+        });
+    };
+
+    return (
+      <>
+        <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+                    {menuItems.map((dish, index) => (
+                        <div key={index} className="flex flex-col gap-3 pb-3">
+                            <div
+                                className="w-full h-40 sm:h-52 bg-center bg-no-repeat bg-cover rounded-xl"
+                                style={{ backgroundImage:`url(${dish.img})` }}
+                            ></div>
+                            <p className="text-[#1b0e0e] text-base font-medium leading-normal">{dish.name}</p>
+                            {cart[dish.name] ? (
+                               <div 
+                               className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center rounded-xl h-10 px-4 sm:h-12 sm:px-5 bg-[#e5302a] text-white text-sm sm:text-base font-bold"
+                           >                                   
+                            <button onClick={() => decreaseQuantity(dish.name)} className="px-3 text-lg">-</button>
+                           <span>{cart[dish.name]}</span>
+                           <button onClick={() => increaseQuantity(dish.name)} className="px-3 text-lg">+</button>
+                           </div>
+
+                            ):(
+                              <button 
+                              className="flex justify-center items-center bg-[#e5302a] text-white font-bold rounded-xl h-10 px-4"
+                              onClick={() => increaseQuantity(dish.name)}
+                          >
+                              Add
+                          </button>
+                            )}
+                           
+                        </div>
+                    ))}
+                </div>
+      </>
+       
+    );
+};
 
 export default Card;

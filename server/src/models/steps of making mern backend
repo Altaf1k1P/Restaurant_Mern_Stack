@@ -1,0 +1,68 @@
+
+
+Schema
+
+// ✅ 1. User Schema (For Customers Only)
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  phone: { type: String },
+  //address: { type: String },
+  address: {
+    street: { type: String },
+    city: { type: String },
+    state: { type: String },
+    zipCode: { type: String },
+    country: { type: String }
+  },
+}, { timestamps: true });
+
+const User = mongoose.model("User", userSchema);
+
+// ✅ 2. Admin Schema (For Admin Users)
+const adminSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: ["admin"], default: "admin" },
+}, { timestamps: true });
+
+const Admin = mongoose.model("Admin", adminSchema);
+
+// ✅ 3. Food Item Schema
+const foodSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String },
+  price: { type: Number, required: true },
+  category: { type: String, enum: ["starter", "main course", "dessert", "beverage"], required: true },
+  isAvailable: { type: Boolean, default: true },
+  imageUrl: { type: String }, // Store image URL
+  addedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+}, { timestamps: true });
+
+const Food = mongoose.model("Food", foodSchema);
+
+// ✅ 4. Order Schema
+const orderSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  totalAmount: { type: Number, required: true },
+  status: { type: String, enum: ["pending", "preparing", "completed", "cancelled"], default: "pending" },
+  orderItems: [{ type: mongoose.Schema.Types.ObjectId, ref: "OrderItem" }],
+  createdAt: { type: Date, default: Date.now },
+  updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+}, { timestamps: true });
+
+const Order = mongoose.model("Order", orderSchema);
+
+// ✅ 5. Order Item Schema (Tracks individual food items in an order)
+const orderItemSchema = new mongoose.Schema({
+  orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order", required: true },
+  foodId: { type: mongoose.Schema.Types.ObjectId, ref: "Food", required: true },
+  quantity: { type: Number, required: true },
+  price: { type: Number, required: true }, // Snapshot price
+}, { timestamps: true });
+
+const OrderItem = mongoose.model("OrderItem", orderItemSchema);
+
+// module.exports = { User, Admin, Food, Order, OrderItem };
