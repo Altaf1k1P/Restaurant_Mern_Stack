@@ -21,10 +21,10 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 // Import Routes (Uncomment when needed)
-// import FoodRouter from './routes/Food.route.js'; 
-// import UserRouter from './routes/user.route.js'; 
+import FoodRouter from './routes/food.routes.js'; 
+ import UserRouter from './routes/user.routes.js'; 
 
-// app.use('/api/', FoodRouter);
-// app.use('/api/auth', UserRouter);
+app.use('/api', FoodRouter);
+ app.use('/api/auth', UserRouter);
 
 export default app;

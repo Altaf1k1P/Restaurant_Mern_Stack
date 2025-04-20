@@ -8,33 +8,28 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Upload File to Cloudinary (Convert to WebP & Compress)
+// Upload File to Cloudinary
 const uploadOnCloudinary = async (localFilePath) => {
+  console.log(localFilePath);
+  
   if (!localFilePath) return null;
 
   try {
     const response = await cloudinary.uploader.upload(localFilePath, {
       folder: "blog_images",
       resource_type: "image",
-      format: "webp",  // Convert to WebP
-      quality: "auto:good", // Auto optimize with good quality
-      width: 800, // Resize to a max width of 800px
+      format: "webp", // Automatically determine the format
+      quality: "auto:good", // Automatically adjust quality to reduce size
+      width: 800, // Resize to a maximum width of 800px
       crop: "scale",
     });
-
-    // Remove local file after successful upload
+    console.log("response:", response);
+    
     fs.unlinkSync(localFilePath);
     return { url: response.secure_url, public_id: response.public_id };
   } catch (error) {
+    fs.unlinkSync(localFilePath);
     console.error(`Cloudinary Upload Error: ${error.message}`);
-    
-    // Ensure local file is deleted even on failure
-    try {
-      fs.unlinkSync(localFilePath);
-    } catch (unlinkError) {
-      console.error(`Failed to delete local file: ${unlinkError.message}`);
-    }
-    
     return null;
   }
 };
