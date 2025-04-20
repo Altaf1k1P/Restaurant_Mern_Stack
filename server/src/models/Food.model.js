@@ -1,7 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 
 // Food Schema
-const FoodSchema = new mongoose.Schema({
+const FoodSchema = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
